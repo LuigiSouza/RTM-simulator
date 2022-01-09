@@ -1,3 +1,6 @@
+#ifndef __MACHINE_HPP__
+#define __MACHINE_HPP__
+
 #include "Transiction.hpp"
 #include "Tape.hpp"
 
@@ -19,11 +22,12 @@ private:
     private:
         Enum_type state_type;
         std::string name;
-        std::list<Transiction> transactions;
+        std::list<Transiction> transictions;
 
     public:
         std::string get_name();
         void set_type(Enum_type type) { this->state_type = type; };
+        void add_transiction(Transiction transiction) { this->transictions.push_back(transiction); };
 
         State(std::string name);
         ~State();
@@ -44,10 +48,13 @@ public:
     void add_alphabet(std::string symbol);
     void add_tape_alphabet(std::string symbol);
 
-    void add_transiction(std::string curr_state, std::string symbol, std::string next_state, std::string next_symbol);
+    void add_transiction(char curr_state, char symbol, char next_state, char next_symbol, int step);
 
     void set_initial(std::string key);
     void set_final(std::string key);
+
+    void step();
+    void run();
 
     Machine();
     ~Machine();
@@ -62,19 +69,29 @@ void Machine::add_tape_alphabet(std::string symbol)
     this->tape_alphabet.push_back(symbol);
 }
 
-void Machine::add_transiction(std::string curr_state, std::string symbol, std::string next_state, std::string next_symbol)
+void Machine::step()
 {
+}
+void Machine::run()
+{
+}
+
+void Machine::add_transiction(char curr_state, char symbol, char next_state, char next_symbol, int step)
+{
+    Transiction transiction = Transiction(curr_state, symbol, next_state, next_symbol, step);
+    std::string key(1, curr_state);
+    this->states.find(key)->second.add_transiction(transiction);
 }
 
 void Machine::set_initial(std::string key)
 {
     this->initial_state = key;
-    states.find(key)->second.set_type(Enum_type::Initial);
+    this->states.find(key)->second.set_type(Enum_type::Initial);
 }
 void Machine::set_final(std::string key)
 {
     this->final_state = key;
-    states.find(key)->second.set_type(Enum_type::Final);
+    this->states.find(key)->second.set_type(Enum_type::Final);
 }
 
 void Machine::add_state(std::string name)
@@ -98,16 +115,21 @@ Machine::State::State(std::string name)
 }
 Machine::State::~State()
 {
-    transactions.clear();
+    this->transictions.clear();
 }
 
 Machine::Machine()
 {
+    input = Tape();
+    history = Tape();
+    output = Tape();
 }
 
 Machine::~Machine()
 {
-    states.clear();
-    tape_alphabet.clear();
-    alphabet.clear();
+    this->states.clear();
+    this->tape_alphabet.clear();
+    this->alphabet.clear();
 }
+
+#endif

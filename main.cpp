@@ -63,6 +63,10 @@ void load_transictions(Machine machine)
         std::getline(stream, snd);
 
         char curr_state = fst[1], symbol = fst[3], next_state = snd[1], next_symbol = snd[3];
+        int move = snd[5] == 'R' ? 1 : snd[5] == 'L' ? -1
+                                                     : 0;
+
+        machine.add_transiction(curr_state, symbol, next_state, next_symbol, move);
     }
 }
 
@@ -72,6 +76,7 @@ int main()
 
     load_info(machine);
     load_transictions(machine);
+    machine.run();
 
     return 0;
 }
