@@ -26,7 +26,9 @@ private:
 public:
     string get_name() { return this->name; };
     void set_type(Enum_type type) { this->state_type = type; };
+    bool is_final() { return this->state_type == Enum_type::Final; };
 
+    list<Transiction *> get_transictions() { return transictions; };
     Transiction *get_transiction(char input, char history, char output);
     void add_transiction(Transiction *transiction) { this->transictions.push_back(transiction); };
 

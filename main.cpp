@@ -38,7 +38,7 @@ void load_info(Machine *machine)
     for (int i = 0; i < num_alphabet; i++)
     {
         string letter;
-        states >> letter;
+        alph >> letter;
         string str_letter(1, letter[0]);
         machine->add_alphabet(str_letter);
     }
@@ -47,7 +47,7 @@ void load_info(Machine *machine)
     for (int i = 0; i < num_alph_tape; i++)
     {
         string letter;
-        states >> letter;
+        alph_tape >> letter;
         string str_letter(1, letter[0]);
         machine->add_tape_alphabet(str_letter);
     }
@@ -89,6 +89,8 @@ int main()
     load_transictions(machine);
     load_input(machine);
 
+    machine->create_copy();
+    machine->create_retrace();
     machine->run();
 
     return 0;

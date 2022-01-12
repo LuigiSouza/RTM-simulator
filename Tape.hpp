@@ -5,17 +5,18 @@ class Tape
 {
 private:
     int index = 0;
-    char blank = 'B';
     std::string memory = " ";
 
 public:
     void shift_r();
     void shift_l();
+    const static char blank = 'B';
 
     char read();
     void write(char sym);
 
     void print_memory();
+    int get_index() { return index; };
 
     Tape(/* args */);
     ~Tape();
@@ -51,6 +52,7 @@ void Tape::write(char sym)
 
 Tape::Tape(/* args */)
 {
+    memory[0] = Tape::blank;
 }
 
 Tape::~Tape()
