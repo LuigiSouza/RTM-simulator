@@ -5,7 +5,7 @@ class Tape
 {
 private:
     int index = 0;
-    char blank = ' ';
+    char blank = 'B';
     std::string memory = " ";
 
 public:

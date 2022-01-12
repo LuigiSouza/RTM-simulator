@@ -3,62 +3,61 @@
 
 #include "Transiction.hpp"
 #include "Tape.hpp"
+#include "State.hpp"
 
 #include <list>
 #include <map>
 
-enum Enum_type
-{
-    Initial,
-    Middle,
-    Final
-};
+using std::cout;
+using std::endl;
+using std::list;
+using std::map;
+using std::pair;
+using std::string;
+
+static void stop_program(string message);
 
 class Machine
 {
 private:
-    class State
+    enum Enum_state
     {
-    private:
-        Enum_type state_type;
-        std::string name;
-        std::list<Transiction> transictions;
-
-    public:
-        std::string get_name() { return this->name; };
-        void set_type(Enum_type type) { this->state_type = type; };
-
-        Transiction *get_transiction(char input, char history, char output);
-        void add_transiction(Transiction transiction) { this->transictions.push_back(transiction); };
-
-        State(std::string name);
-        ~State();
+        Failed,
+        Finished,
+        Running,
+        Stopped,
     };
-    std::string curr_state;
-    std::map<std::string, Machine::State> states;
-    std::string alphabet = "";
-    std::string tape_alphabet = "";
+    map<string, State> states;
+    map<string, State> states_A;
+    map<string, State> states_B;
+    map<string, State> states_C;
+    string curr_state;
+    string alphabet = "";
+    string tape_alphabet = "";
 
-    std::string initial_state;
-    std::string final_state;
+    string initial_state;
+    string final_state;
 
     Tape input;
     Tape history;
     Tape output;
 
+    Enum_state machine_state = Enum_state::Stopped;
+
 public:
-    void add_state(std::string name);
-    void add_alphabet(std::string symbol);
-    void add_tape_alphabet(std::string symbol);
-    void load_input(std::string input);
+    void add_state(string name);
+    void add_alphabet(string symbol);
+    void add_tape_alphabet(string symbol);
+    void load_input(string input);
 
     void add_transiction(char curr_state, char symbol, char next_state, char next_symbol, int step);
 
-    void set_initial(std::string key);
-    void set_final(std::string key);
+    void set_initial(string key);
+    void set_final(string key);
 
     void print_machine();
 
+    void reverse_step();
     void step();
     void run();
 
@@ -66,22 +65,22 @@ public:
     ~Machine();
 };
 
-void Machine::add_alphabet(std::string symbol)
+void Machine::add_alphabet(string symbol)
 {
     this->alphabet += symbol;
 }
-void Machine::add_tape_alphabet(std::string symbol)
+void Machine::add_tape_alphabet(string symbol)
 {
     this->tape_alphabet += symbol;
 }
 
-void Machine::load_input(std::string input)
+void Machine::load_input(string input)
 {
     int count = 0;
     for (char &i : input)
     {
         if (!alphabet.find(i))
-            throw std::invalid_argument("Caractere inválido...");
+            stop_program("Caractere inválido...");
         this->input.write(i);
         this->input.shift_r();
         count++;
@@ -92,28 +91,38 @@ void Machine::load_input(std::string input)
 
 void Machine::print_machine()
 {
-    std::cout << "---States---" << std::endl;
-    std::cout << "Current State: " << curr_state << std::endl;
-    std::cout << "Initial State: " << initial_state << std::endl;
-    std::cout << "Final State: " << final_state << std::endl
-              << std::endl;
-    std::cout << "---Tapes---" << std::endl;
-    std::cout << "Input: ";
+    cout << "---States---" << endl;
+    cout << "Current State: " << curr_state << endl;
+    cout << "Initial State: " << initial_state << endl;
+    cout << "Final State: " << final_state << endl
+         << endl;
+    cout << "---Tapes---" << endl;
+    cout << "Input: ";
     input.print_memory();
-    std::cout << "History: ";
+    cout << "History: ";
     history.print_memory();
-    std::cout << "Output: ";
+    cout << "Output: ";
     output.print_memory();
 }
 
+void Machine::reverse_step() {}
+
 void Machine::step()
 {
-    std::cout << "Antes: " << std::endl;
+    cout << "Antes: " << endl;
     print_machine();
     State state = this->states.find(this->curr_state)->second;
     Transiction *transiction = state.get_transiction(input.read(), history.read(), output.read());
-    std::string *quad[2] = {transiction->get_quad().first,
-                            transiction->get_quad().second};
+
+    if (transiction == nullptr)
+    {
+        this->machine_state = Enum_state::Failed;
+        cout << "Entrada inválida" << endl;
+        return;
+    }
+
+    string *quad[2] = {transiction->get_quad().first,
+                       transiction->get_quad().second};
     Tape *tapes[3] = {&input, &history, &output};
     for (int j = 0; j < 2; j++)
         for (int i = 0; i < 3; i++)
@@ -131,88 +140,56 @@ void Machine::step()
             }
         }
     this->curr_state = transiction->get_states().second;
-    std::cout << "Depois: " << std::endl;
+    if (this->curr_state == this->final_state)
+        this->machine_state = Enum_state::Finished;
+    cout << "Depois: " << endl;
     print_machine();
 }
 void Machine::run()
 {
-
+    this->machine_state = Enum_state::Running;
     int i = 0;
-    while (curr_state != final_state)
-    {
+    while (this->machine_state == Enum_state::Running)
         step();
-        std::cout << i++ << std::endl;
-    }
+
+    cout << "Programa finalizado, Resultados:" << std::endl;
+    print_machine();
 }
 
 void Machine::add_transiction(char curr_state, char symbol, char next_state, char next_symbol, int step)
 {
-    std::string key(1, curr_state);
-    std::string next_key(1, curr_state);
+    string key(1, curr_state);
+    string next_key(1, curr_state);
     if (!states.count(key) || !states.count(next_key))
-        throw std::invalid_argument("Nome do estado inválido...");
+        stop_program("Nome do estado inválido...");
     if (!tape_alphabet.find(symbol) || !tape_alphabet.find(next_symbol))
-        throw std::invalid_argument("Símbolo inválido...");
+        stop_program("Símbolo inválido...");
     if (step != -1 && step != 1 && step != 0)
-        throw std::invalid_argument("Passo de trasição inválido...");
+        stop_program("Passo de trasição inválido...");
 
-    Transiction transiction = Transiction(curr_state, symbol, next_state, next_symbol, step);
+    Transiction *transiction = new Transiction(curr_state, symbol, next_state, next_symbol, step);
     this->states.find(key)->second.add_transiction(transiction);
 }
 
-void Machine::set_initial(std::string key)
+void Machine::set_initial(string key)
 {
     this->initial_state = key;
     this->curr_state = key;
     this->states.find(key)->second.set_type(Enum_type::Initial);
 }
-void Machine::set_final(std::string key)
+void Machine::set_final(string key)
 {
     this->final_state = key;
     this->states.find(key)->second.set_type(Enum_type::Final);
 }
 
-void Machine::add_state(std::string name)
+void Machine::add_state(string name)
 {
     if (!states.count(name))
-        states.insert(std::pair<std::string, Machine::State>(name, Machine::State(name)));
+        states.insert(pair<string, State>(name, State(name)));
     else
-        throw std::invalid_argument("Nome do estado duplicado...");
-    // std::string asd = states.find(str_name)->second.get_name();
-}
-
-Transiction *Machine::State::get_transiction(char input, char history, char output)
-{
-    Transiction *match = nullptr;
-    for (Transiction &transiction : transictions)
-    {
-        int match_count = 0;
-        auto quad_pair = transiction.get_quad().first;
-        char check[3] = {input, history, output};
-        for (int i = 0; i < 3; i++)
-        {
-            char it = quad_pair[i][0];
-            if (it == check[i] || it == '\\')
-                match_count++;
-        }
-        std::cout << "match: " << match_count << std::endl;
-        if (match_count == 3)
-        {
-            match = &transiction;
-            break;
-        }
-    }
-    return match;
-}
-
-Machine::State::State(std::string name)
-{
-    this->state_type = Enum_type::Middle;
-    this->name = name;
-}
-Machine::State::~State()
-{
-    this->transictions.clear();
+        stop_program("Nome do estado duplicado...");
+    // string asd = states.find(str_name)->second.get_name();
 }
 
 Machine::Machine()
@@ -225,6 +202,12 @@ Machine::Machine()
 Machine::~Machine()
 {
     this->states.clear();
+}
+
+static void stop_program(string message)
+{
+    cout << "Programa encerrado: " << message << endl;
+    exit(-1);
 }
 
 #endif

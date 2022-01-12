@@ -4,46 +4,51 @@
 
 #include "Machine.hpp"
 
+using std::cin;
+using std::getline;
+using std::string;
+using std::stringstream;
+
 int num_states, num_alphabet, num_alph_tape, num_transictions;
 
 void load_info(Machine *machine)
 {
-    std::string line;
-    std::getline(std::cin, line);
-    std::stringstream info(line);
+    string line;
+    getline(cin, line);
+    stringstream info(line);
 
     info >> num_states >> num_alphabet >> num_alph_tape >> num_transictions;
 
-    std::getline(std::cin, line);
-    std::stringstream states(line);
-    std::string initial = "";
-    std::string final = "";
+    getline(cin, line);
+    stringstream states(line);
+    string initial = "";
+    string final = "";
     for (int i = 0; i < num_states; i++)
     {
-        std::string name;
+        string name;
         states >> name;
-        std::string state(1, name[0]);
+        string state(1, name[0]);
         if (initial.empty())
             initial = state;
         final = state;
         machine->add_state(state);
     }
-    std::getline(std::cin, line);
-    std::stringstream alph(line);
+    getline(cin, line);
+    stringstream alph(line);
     for (int i = 0; i < num_alphabet; i++)
     {
-        std::string letter;
+        string letter;
         states >> letter;
-        std::string str_letter(1, letter[0]);
+        string str_letter(1, letter[0]);
         machine->add_alphabet(str_letter);
     }
-    std::getline(std::cin, line);
-    std::stringstream alph_tape(line);
+    getline(cin, line);
+    stringstream alph_tape(line);
     for (int i = 0; i < num_alph_tape; i++)
     {
-        std::string letter;
+        string letter;
         states >> letter;
-        std::string str_letter(1, letter[0]);
+        string str_letter(1, letter[0]);
         machine->add_tape_alphabet(str_letter);
     }
     machine->set_final(final);
@@ -54,13 +59,13 @@ void load_transictions(Machine *machine)
 {
     for (int i = 0; i < num_transictions; i++)
     {
-        std::string asd;
-        std::cin >> asd;
-        std::stringstream stream(asd);
-        std::string fst;
-        std::string snd;
-        std::getline(stream, fst, '=');
-        std::getline(stream, snd);
+        string asd;
+        cin >> asd;
+        stringstream stream(asd);
+        string fst;
+        string snd;
+        getline(stream, fst, '=');
+        getline(stream, snd);
 
         char curr_state = fst[1], symbol = fst[3], next_state = snd[1], next_symbol = snd[3];
         int move = snd[5] == 'R' ? 1 : snd[5] == 'L' ? -1
@@ -71,8 +76,8 @@ void load_transictions(Machine *machine)
 
 void load_input(Machine *machine)
 {
-    std::string input;
-    std::cin >> input;
+    string input;
+    cin >> input;
     machine->load_input(input);
 }
 
