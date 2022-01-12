@@ -49,24 +49,26 @@ pair<Quadruple_t *, Quadruple_t *> Transiction::get_quad()
 }
 pair<Quadruple_t *, Quadruple_t *> Transiction::get_rev_quad()
 {
-    Quadruple_t rev_fst_quad[6], rev_snd_quad[6];
+    Quadruple_t *rev_fst_quad = new Quadruple_t[6];
+    Quadruple_t *rev_snd_quad = new Quadruple_t[6];
     Quadruple_t *aux[2] = {fst_quad, snd_quad};
+    Quadruple_t *aux_ptr[2] = {rev_snd_quad, rev_fst_quad};
     for (int j = 0; j < 2; j++)
         for (int i = 0; i < 3; i++)
         {
             if (aux[j][i] == "\\")
             {
                 int step = stoi(aux[j][i + 3]);
-                rev_snd_quad[i] = "\\";
-                rev_snd_quad[i + 3] = to_string(-1 * step);
+                aux_ptr[j][i] = "\\";
+                aux_ptr[j][i + 3] = to_string(-1 * step);
             }
             else
             {
-                rev_snd_quad[i] = aux[j][i + 3];
-                rev_snd_quad[i + 3] = aux[j][i];
+                aux_ptr[j][i] = aux[j][i + 3];
+                aux_ptr[j][i + 3] = aux[j][i];
             }
         }
-    return pair<Quadruple_t *, Quadruple_t *>(fst_quad, snd_quad);
+    return pair<Quadruple_t *, Quadruple_t *>(rev_fst_quad, rev_snd_quad);
 }
 pair<string, string> Transiction::get_states()
 {
@@ -110,10 +112,9 @@ Transiction::~Transiction() {}
 static void set_values(Quadruple_t *array, list<string> values, int size)
 {
     auto it = values.begin();
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++, ++it)
     {
         array[i] = *it;
-        it++;
     }
 }
 
