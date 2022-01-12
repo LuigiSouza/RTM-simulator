@@ -1,7 +1,8 @@
 #ifndef __STATE_HPP__
 #define __STATE_HPP__
 
-#include "Transiction.hpp"
+class Transiction;
+
 #include <list>
 
 using std::list;
@@ -36,7 +37,7 @@ public:
 Transiction *State::get_transiction(char input, char history, char output)
 {
     Transiction *match = nullptr;
-    for (Transiction &transiction : transictions)
+    for (Transiction *transiction : transictions)
     {
         int match_count = 0;
         auto quad_pair = transiction->get_quad().first;

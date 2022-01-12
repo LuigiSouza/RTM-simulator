@@ -1,8 +1,9 @@
 #ifndef __TRANSICTION_HPP__
 #define __TRANSICTION_HPP__
 
+class State;
+
 #include <list>
-#include "State.hpp"
 
 using std::list;
 using std::pair;
@@ -27,8 +28,6 @@ private:
 public:
     pair<Quadruple_t *, Quadruple_t *> get_quad();
     pair<string, string> get_states();
-
-    void set_next_state(State *state) { this->next_state_obj = state; };
 
     Transiction(char curr_state, char symbol, char next_state, char next_symbol, int step);
     ~Transiction();

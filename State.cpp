@@ -1,4 +1,5 @@
 #include "State.hpp"
+#include "Transiction.hpp"
 
 Transiction *State::get_transiction(char input, char history, char output)
 {

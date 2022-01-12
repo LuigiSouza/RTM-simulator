@@ -1,4 +1,5 @@
 #include "Transiction.hpp"
+#include "State.hpp"
 
 pair<Quadruple_t *, Quadruple_t *> Transiction::get_quad()
 {
@@ -9,10 +10,10 @@ pair<string, string> Transiction::get_states()
     return pair<string, string>(curr_state, next_state);
 }
 
-// void Transiction::set_next_state(State *state)
-// {
-//     this->next_state_obj = state;
-// }
+void Transiction::set_next_state(State *state)
+{
+    this->next_state_obj = state;
+}
 
 Transiction::Transiction(char curr_state, char symbol, char next_state, char next_symbol, int step)
 {
