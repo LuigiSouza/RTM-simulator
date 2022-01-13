@@ -55,5 +55,7 @@ State::State(string name)
 }
 State::~State()
 {
+    for (Transition *transition : transitions)
+        delete transition;
     this->transitions.clear();
 }
