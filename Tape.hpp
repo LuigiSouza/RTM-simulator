@@ -24,7 +24,16 @@ public:
 
 void Tape::print_memory()
 {
-    std::cout << memory << std::endl;
+    std::string print_memory = "";
+    for (int i = 0; i < memory.length(); i++)
+    {
+        std::string sym(1, memory[i]);
+        print_memory += " " + sym;
+    }
+    print_memory += " ";
+    print_memory[index << 1] = '|';
+    print_memory[(index + 1) << 1] = '|';
+    std::cout << print_memory << std::endl;
 }
 
 void Tape::shift_l()

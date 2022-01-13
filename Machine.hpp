@@ -54,7 +54,7 @@ public:
     void set_initial(string key);
     void set_final(string key);
 
-    void print_machine();
+    void print_machine(Transiction *transiction);
 
     void create_copy();
     void create_retrace();
@@ -89,16 +89,33 @@ void Machine::load_input(string input)
         this->input.shift_l();
 }
 
-void Machine::print_machine()
+void Machine::print_machine(Transiction *transiction)
 {
-    cout << "---States---" << endl;
-    cout << "Current State: " << curr_state->get_name() << endl;
-    cout << "---Tapes---" << endl;
-    cout << "Input[" << input.get_index() << "]: ";
+    if (transiction != nullptr)
+    {
+        pair<string, string> states = transiction->get_states();
+        pair<Quadruple_t *, Quadruple_t *> quadruple = transiction->get_quad();
+        Quadruple_t *fst_quad = quadruple.first, *snd_quad = quadruple.second;
+
+        cout << "-----States-----" << endl;
+        cout << "Current State: " << states.first << endl;
+        cout << states.first;
+        cout << " [ '" << fst_quad[0] << "', '" << fst_quad[1] << "', '" << fst_quad[2] << "' ] -> ";
+        cout << (transiction->get_single() ? states.second + " " : states.first + "`");
+        cout << "[ '" << fst_quad[3] << "', '" << fst_quad[4] << "', '" << fst_quad[5] << "' ]" << endl;
+        if (!transiction->get_single())
+        {
+            cout << states.first << "`[ '" << snd_quad[0] << "', '" << snd_quad[1] << "', '" << snd_quad[2] << "' ] -> ";
+            cout << states.second << " [ '" << snd_quad[3] << "', '" << snd_quad[4] << "', '" << snd_quad[5] << "' ]" << endl;
+        }
+        cout << "Next State: " << states.second << endl;
+    }
+    cout << "-----Tapes-----" << endl;
+    cout << "Input  [" << input.get_index() << "]: ";
     input.print_memory();
     cout << "History[" << history.get_index() << "]: ";
     history.print_memory();
-    cout << "Output[" << output.get_index() << "]: ";
+    cout << "Output [" << output.get_index() << "]: ";
     output.print_memory();
 }
 
@@ -191,8 +208,6 @@ void Machine::create_copy()
 
 void Machine::step()
 {
-    cout << "Antes: " << endl;
-    print_machine();
     list<Transiction *> asdfasdf = curr_state->get_transictions();
     Transiction *transiction = curr_state->get_transiction(input.read(), history.read(), output.read());
     if (transiction == nullptr)
@@ -201,6 +216,7 @@ void Machine::step()
         cout << "Entrada inválida" << endl;
         return;
     }
+    print_machine(transiction);
 
     string *quad[2] = {transiction->get_quad().first,
                        transiction->get_quad().second};
@@ -224,19 +240,17 @@ void Machine::step()
     if (this->curr_state->is_final())
         this->machine_state = Enum_state::Finished;
 
-    cout << "Depois: " << endl;
-    print_machine();
     cout << endl;
 }
 void Machine::run()
 {
     this->machine_state = Enum_state::Running;
-    int i = 200;
-    while (this->machine_state == Enum_state::Running && i--)
+    int i = 0;
+    while (this->machine_state == Enum_state::Running && ++i)
         step();
 
-    cout << "Programa finalizado, Resultados: " << i << std::endl;
-    print_machine();
+    cout << "Programa finalizado, passos: " << i << std::endl;
+    print_machine(nullptr);
 }
 
 void Machine::add_transiction(char curr_state, char symbol, char next_state, char next_symbol, int step)
