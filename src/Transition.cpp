@@ -1,4 +1,4 @@
-#include "Transiction.hpp"
+#include "Transition.hpp"
 #include "State.hpp"
 
 static void set_values(Quadruple_t *array, list<string> values, int size)
@@ -10,15 +10,16 @@ static void set_values(Quadruple_t *array, list<string> values, int size)
     }
 }
 
-bool Transiction::get_single() { return this->single_quad; };
-void Transiction::set_next_state(State *state) { this->next_state_obj = state; };
-State *Transiction::get_next_state() { return this->next_state_obj; }
+bool Transition::get_single() { return this->single_quad; }
 
-pair<Quadruple_t *, Quadruple_t *> Transiction::get_quad()
+void Transition::set_next_state(State *state) { this->next_state_obj = state; }
+State *Transition::get_next_state() { return this->next_state_obj; }
+
+pair<Quadruple_t *, Quadruple_t *> Transition::get_quad()
 {
     return pair<Quadruple_t *, Quadruple_t *>(fst_quad, snd_quad);
 }
-pair<Quadruple_t *, Quadruple_t *> Transiction::get_rev_quad()
+pair<Quadruple_t *, Quadruple_t *> Transition::get_reverse_quad()
 {
     Quadruple_t *rev_fst_quad = new Quadruple_t[6];
     Quadruple_t *rev_snd_quad = new Quadruple_t[6];
@@ -41,12 +42,12 @@ pair<Quadruple_t *, Quadruple_t *> Transiction::get_rev_quad()
         }
     return pair<Quadruple_t *, Quadruple_t *>(rev_fst_quad, rev_snd_quad);
 }
-pair<string, string> Transiction::get_states()
+pair<string, string> Transition::get_states()
 {
     return pair<string, string>(curr_state, next_state);
 }
 
-Transiction::Transiction(char curr_state, char symbol, char next_state, char next_symbol, int step)
+Transition::Transition(char curr_state, char symbol, char next_state, char next_symbol, int step)
 {
     string str_state(1, curr_state), str_nxtstate(1, next_state);
     string str_symbol(1, symbol), str_nxtsymbol(1, next_symbol);
@@ -56,7 +57,7 @@ Transiction::Transiction(char curr_state, char symbol, char next_state, char nex
     set_values(snd_quad, {"\\", Tape::blank, "\\", to_string(step), str_state, "0"}, 6);
 }
 
-Transiction::Transiction(string curr_state, string next_state, list<string> quad)
+Transition::Transition(string curr_state, string next_state, list<string> quad)
 {
     this->curr_state = curr_state;
     this->next_state = next_state;
@@ -64,7 +65,7 @@ Transiction::Transiction(string curr_state, string next_state, list<string> quad
     set_values(fst_quad, quad, 6);
     set_values(snd_quad, quad, 6);
 }
-Transiction::Transiction(string curr_state, string next_state, Quadruple_t *fst_quad, Quadruple_t *snd_quad)
+Transition::Transition(string curr_state, string next_state, Quadruple_t *fst_quad, Quadruple_t *snd_quad)
 {
     this->curr_state = curr_state;
     this->next_state = next_state;
@@ -75,4 +76,4 @@ Transiction::Transiction(string curr_state, string next_state, Quadruple_t *fst_
     }
 }
 
-Transiction::~Transiction() {}
+Transition::~Transition() {}

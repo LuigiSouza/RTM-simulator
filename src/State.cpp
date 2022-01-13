@@ -1,13 +1,13 @@
 #include "State.hpp"
-#include "Transiction.hpp"
+#include "Transition.hpp"
 
-Transiction *State::get_transiction(char input, char history, char output)
+Transition *State::get_transition(char input, char history, char output)
 {
-    Transiction *match = nullptr;
-    for (Transiction *transiction : transictions)
+    Transition *match = nullptr;
+    for (Transition *transition : transitions)
     {
         int match_count = 0;
-        auto quad_pair = transiction->get_quad().first;
+        auto quad_pair = transition->get_quad().first;
         char check[3] = {input, history, output};
         for (int i = 0; i < 3; i++)
         {
@@ -17,7 +17,7 @@ Transiction *State::get_transiction(char input, char history, char output)
         }
         if (match_count == 3)
         {
-            match = transiction;
+            match = transition;
             break;
         }
     }
@@ -27,25 +27,25 @@ Transiction *State::get_transiction(char input, char history, char output)
 string State::get_name()
 {
     return this->name;
-};
+}
 
 void State::set_type(Enum_type type)
 {
     this->state_type = type;
-};
+}
 bool State::is_final()
 {
     return this->state_type == Enum_type::Final;
-};
+}
 
-list<Transiction *> State::get_transictions()
+list<Transition *> State::get_transitions()
 {
-    return transictions;
-};
+    return transitions;
+}
 
-void State::add_transiction(Transiction *transiction)
+void State::add_transition(Transition *transition)
 {
-    this->transictions.push_back(transiction);
+    this->transitions.push_back(transition);
 }
 
 State::State(string name)
@@ -55,5 +55,5 @@ State::State(string name)
 }
 State::~State()
 {
-    this->transictions.clear();
+    this->transitions.clear();
 }

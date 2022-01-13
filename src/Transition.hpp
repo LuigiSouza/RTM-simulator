@@ -15,7 +15,7 @@ using std::to_string;
 
 typedef std::string Quadruple_t;
 
-class Transiction
+class Transition
 {
 private:
     string curr_state, next_state;
@@ -27,7 +27,7 @@ private:
 
 public:
     pair<Quadruple_t *, Quadruple_t *> get_quad();
-    pair<Quadruple_t *, Quadruple_t *> get_rev_quad();
+    pair<Quadruple_t *, Quadruple_t *> get_reverse_quad();
     pair<string, string> get_states();
 
     bool get_single();
@@ -35,11 +35,11 @@ public:
     State *get_next_state();
     void set_next_state(State *state);
 
-    Transiction(char curr_state, char symbol, char next_state, char next_symbol, int step);
-    Transiction(string curr_state, string next_state, list<string> quad);
-    Transiction(string curr_state, string next_state, Quadruple_t *fst_quad, Quadruple_t *snd_quad);
+    Transition(char curr_state, char symbol, char next_state, char next_symbol, int step);
+    Transition(string curr_state, string next_state, list<string> quad);
+    Transition(string curr_state, string next_state, Quadruple_t *fst_quad, Quadruple_t *snd_quad);
 
-    ~Transiction();
+    ~Transition();
 };
 
 #endif
