@@ -36,7 +36,6 @@ void Machine::load_input(string input)
 
 void Machine::print_machine(Transition *transition)
 {
-    return;
     cout << "-----Tapes-----" << endl;
     cout << "Input  [" << input.get_index() << "]: ";
     input.print_memory();
@@ -68,9 +67,8 @@ void Machine::print_machine(Transition *transition)
 void Machine::create_retrace()
 {
     for (pair<string, State *> state : this->states_RUN)
-        this->states_RET.insert(pair<string, State *>(state.first, new State(state.first)));
-    cout << (sizeof states_RET) << endl;
-    cout << (states_RET.size()) << endl;
+        if (!this->states_RET.count(state.first))
+            this->states_RET.insert(pair<string, State *>(state.first, new State(state.first)));
     State *new_final = this->states_RET.find(initial_state->get_name())->second;
     new_final->set_type(Enum_type::Final);
     final_state = new_final;
@@ -194,7 +192,7 @@ void Machine::step()
     if (this->curr_state->is_final())
         this->machine_state = Enum_state::Finished;
 
-    //cout << endl;
+    cout << endl;
 }
 void Machine::run()
 {
