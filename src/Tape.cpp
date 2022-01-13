@@ -14,7 +14,7 @@ void Tape::print_memory()
     cout << print_memory << endl;
 }
 
-int Tape::get_index() { return index; };
+int Tape::get_index() { return index; }
 
 void Tape::shift_l()
 {
@@ -25,9 +25,9 @@ void Tape::shift_l()
 }
 void Tape::shift_r()
 {
-    if (index + 1 == (int)memory.length())
-        memory += blank;
     index += 1;
+    if (index == (int)memory.length())
+        memory += blank;
 }
 
 char Tape::read()

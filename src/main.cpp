@@ -9,68 +9,55 @@ using std::getline;
 using std::string;
 using std::stringstream;
 
-int num_states, num_alphabet, num_alph_tape, num_transictions;
+int num_states, num_alphabet, num_alph_tape, num_transitions;
 
 void load_info(Machine *machine)
 {
-    string line;
-    getline(cin, line);
-    stringstream info(line);
+    string symbol;
 
-    info >> num_states >> num_alphabet >> num_alph_tape >> num_transictions;
+    cin >> num_states >> num_alphabet >> num_alph_tape >> num_transitions;
 
-    getline(cin, line);
-    stringstream states(line);
-    string initial = "";
-    string final = "";
+    string initial = "", final = "";
     for (int i = 0; i < num_states; i++)
     {
-        string name;
-        states >> name;
-        string state(1, name[0]);
+        cin >> symbol;
+        string state(1, symbol[0]);
         if (initial.empty())
             initial = state;
         final = state;
         machine->add_state(state);
     }
-    getline(cin, line);
-    stringstream alph(line);
     for (int i = 0; i < num_alphabet; i++)
     {
-        string letter;
-        alph >> letter;
-        string str_letter(1, letter[0]);
-        machine->add_alphabet(str_letter);
+        cin >> symbol;
+        string str_symbol(1, symbol[0]);
+        machine->add_alphabet(str_symbol);
     }
-    getline(cin, line);
-    stringstream alph_tape(line);
     for (int i = 0; i < num_alph_tape; i++)
     {
-        string letter;
-        alph_tape >> letter;
-        string str_letter(1, letter[0]);
-        machine->add_tape_alphabet(str_letter);
+        cin >> symbol;
+        string str_symbol(1, symbol[0]);
+        machine->add_tape_alphabet(str_symbol);
     }
     machine->set_final(final);
     machine->set_initial(initial);
 }
 
-void load_transictions(Machine *machine)
+void load_transitions(Machine *machine)
 {
-    for (int i = 0; i < num_transictions; i++)
+    for (int i = 0; i < num_transitions; i++)
     {
-        string asd;
-        cin >> asd;
-        stringstream stream(asd);
-        string fst;
-        string snd;
+        string line;
+        cin >> line;
+        stringstream stream(line);
+        string fst, snd;
         getline(stream, fst, '=');
         getline(stream, snd);
 
         char curr_state = fst[1], symbol = fst[3], next_state = snd[1], next_symbol = snd[3];
         int move = snd[5] == 'R' ? 1 : snd[5] == 'L' ? -1
                                                      : 0;
-        machine->add_transiction(curr_state, symbol, next_state, next_symbol, move);
+        machine->add_transition(curr_state, symbol, next_state, next_symbol, move);
     }
 }
 
@@ -86,12 +73,14 @@ int main()
     Machine *machine = new Machine();
 
     load_info(machine);
-    load_transictions(machine);
+    load_transitions(machine);
     load_input(machine);
 
     machine->create_copy();
     machine->create_retrace();
     machine->run();
+
+    delete machine;
 
     return 0;
 }

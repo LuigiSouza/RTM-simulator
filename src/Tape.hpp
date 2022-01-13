@@ -15,9 +15,10 @@ private:
     string memory = " ";
 
 public:
+    static const string blank;
+
     void shift_r();
     void shift_l();
-    static const string blank;
 
     char read();
     void write(char sym);
