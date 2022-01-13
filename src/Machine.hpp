@@ -163,23 +163,22 @@ void Machine::create_copy()
     State *stateb = states_B.find("B")->second;
     State *statef = states_B.find("F")->second;
 
-    string blank_str(1, Tape::blank);
-    Transiction *trasiction = new Transiction(final_state->get_name(), "l", {blank_str, "\\", blank_str, blank_str, "0", blank_str});
+    Transiction *trasiction = new Transiction(final_state->get_name(), "l", {Tape::blank, "\\", Tape::blank, Tape::blank, "0", Tape::blank});
     trasiction->set_next_state(statel);
     final_state->add_transiction(trasiction);
-    trasiction = new Transiction("l", "L", {"\\", "\\", blank_str, "-1", "0", blank_str});
+    trasiction = new Transiction("l", "L", {"\\", "\\", Tape::blank, "-1", "0", Tape::blank});
     trasiction->set_next_state(stateL);
     statel->add_transiction(trasiction);
-    trasiction = new Transiction("L", "l", {blank_str, "\\", blank_str, blank_str, "0", blank_str});
+    trasiction = new Transiction("L", "l", {Tape::blank, "\\", Tape::blank, Tape::blank, "0", Tape::blank});
     trasiction->set_next_state(statel);
     stateL->add_transiction(trasiction);
-    trasiction = new Transiction("L", "-", {"\\", "\\", blank_str, "0", "0", blank_str});
+    trasiction = new Transiction("L", "-", {"\\", "\\", Tape::blank, "0", "0", Tape::blank});
     trasiction->set_next_state(statemin);
     stateL->add_transiction(trasiction);
-    trasiction = new Transiction("-", "r", {blank_str, "\\", blank_str, blank_str, "0", blank_str});
+    trasiction = new Transiction("-", "r", {Tape::blank, "\\", Tape::blank, Tape::blank, "0", Tape::blank});
     trasiction->set_next_state(stater);
     statemin->add_transiction(trasiction);
-    trasiction = new Transiction("-", "-", {"\\", "\\", blank_str, "-1", "0", blank_str});
+    trasiction = new Transiction("-", "-", {"\\", "\\", Tape::blank, "-1", "0", Tape::blank});
     trasiction->set_next_state(statemin);
     statemin->add_transiction(trasiction);
     trasiction = new Transiction("r", "R", {"\\", "\\", "\\", "1", "0", "1"});
@@ -188,7 +187,7 @@ void Machine::create_copy()
     for (char &sym : this->tape_alphabet)
     {
         string str_sym(1, sym);
-        if (str_sym == blank_str)
+        if (str_sym == Tape::blank)
         {
             trasiction = new Transiction("R", final_state->get_name(), {str_sym, "\\", "\\", str_sym, "0", "-1"});
             states_C.insert(pair<string, State *>(final_state->get_name(), new State(final_state->get_name())));
@@ -198,7 +197,7 @@ void Machine::create_copy()
             continue;
         }
 
-        trasiction = new Transiction("R", "r", {str_sym, "\\", blank_str, str_sym, "0", str_sym});
+        trasiction = new Transiction("R", "r", {str_sym, "\\", Tape::blank, str_sym, "0", str_sym});
         trasiction->set_next_state(stater);
         stateR->add_transiction(trasiction);
     }

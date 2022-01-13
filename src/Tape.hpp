@@ -1,16 +1,23 @@
 #ifndef __TAPE_HPP__
 #define __TAPE_HPP__
 
+#include <iostream>
+#include <string>
+
+using std::cout;
+using std::endl;
+using std::string;
+
 class Tape
 {
 private:
     int index = 0;
-    std::string memory = " ";
+    string memory = " ";
 
 public:
     void shift_r();
     void shift_l();
-    const static char blank = 'B';
+    static const string blank;
 
     char read();
     void write(char sym);
@@ -24,16 +31,16 @@ public:
 
 void Tape::print_memory()
 {
-    std::string print_memory = "";
+    string print_memory = "";
     for (int i = 0; i < memory.length(); i++)
     {
-        std::string sym(1, memory[i]);
+        string sym(1, memory[i]);
         print_memory += " " + sym;
     }
     print_memory += " ";
     print_memory[index << 1] = '|';
     print_memory[(index + 1) << 1] = '|';
-    std::cout << print_memory << std::endl;
+    cout << print_memory << endl;
 }
 
 void Tape::shift_l()
@@ -59,9 +66,11 @@ void Tape::write(char sym)
     memory[index] = sym;
 }
 
+const string Tape::blank = "B";
+
 Tape::Tape(/* args */)
 {
-    memory[0] = Tape::blank;
+    memory[0] = Tape::blank[0];
 }
 
 Tape::~Tape()

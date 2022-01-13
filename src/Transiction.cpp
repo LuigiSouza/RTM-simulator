@@ -1,47 +1,18 @@
-#ifndef __TRANSICTION_HPP__
-#define __TRANSICTION_HPP__
+#include "Transiction.hpp"
+#include "State.hpp"
 
-class State;
-
-#include "Tape.hpp"
-#include <list>
-
-using std::list;
-using std::pair;
-using std::stoi;
-using std::string;
-using std::to_string;
-
-typedef std::string Quadruple_t;
-
-static void set_values(Quadruple_t *array, list<string> values, int size);
-
-class Transiction
+static void set_values(Quadruple_t *array, list<string> values, int size)
 {
-private:
-    string curr_state, next_state;
-    State *next_state_obj = nullptr;
+    auto it = values.begin();
+    for (int i = 0; i < size; i++, ++it)
+    {
+        array[i] = *it;
+    }
+}
 
-    Quadruple_t fst_quad[6], snd_quad[6];
-
-    bool revert = false;
-    bool single_quad = false;
-
-public:
-    pair<Quadruple_t *, Quadruple_t *> get_quad();
-    pair<Quadruple_t *, Quadruple_t *> get_rev_quad();
-    pair<string, string> get_states();
-
-    bool get_single() { return this->single_quad; };
-
-    void set_next_state(State *state) { this->next_state_obj = state; };
-    State *get_next_state() { return this->next_state_obj; }
-
-    Transiction(char curr_state, char symbol, char next_state, char next_symbol, int step);
-    Transiction(string curr_state, string next_state, list<string> quad);
-    Transiction(string curr_state, string next_state, Quadruple_t *fst_quad, Quadruple_t *snd_quad);
-    ~Transiction();
-};
+bool Transiction::get_single() { return this->single_quad; };
+void Transiction::set_next_state(State *state) { this->next_state_obj = state; };
+State *Transiction::get_next_state() { return this->next_state_obj; }
 
 pair<Quadruple_t *, Quadruple_t *> Transiction::get_quad()
 {
@@ -77,15 +48,12 @@ pair<string, string> Transiction::get_states()
 
 Transiction::Transiction(char curr_state, char symbol, char next_state, char next_symbol, int step)
 {
-    string str_state(1, curr_state);
-    string str_nxtstate(1, next_state);
-    string str_symbol(1, symbol);
-    string str_nxtsymbol(1, next_symbol);
-    string str_blank(1, Tape::blank);
+    string str_state(1, curr_state), str_nxtstate(1, next_state);
+    string str_symbol(1, symbol), str_nxtsymbol(1, next_symbol);
     this->curr_state = str_state;
     this->next_state = str_nxtstate;
     set_values(fst_quad, {str_symbol, "\\", "\\", str_nxtsymbol, "1", "0"}, 6);
-    set_values(snd_quad, {"\\", str_blank, "\\", to_string(step), str_state, "0"}, 6);
+    set_values(snd_quad, {"\\", Tape::blank, "\\", to_string(step), str_state, "0"}, 6);
 }
 
 Transiction::Transiction(string curr_state, string next_state, list<string> quad)
@@ -108,14 +76,3 @@ Transiction::Transiction(string curr_state, string next_state, Quadruple_t *fst_
 }
 
 Transiction::~Transiction() {}
-
-static void set_values(Quadruple_t *array, list<string> values, int size)
-{
-    auto it = values.begin();
-    for (int i = 0; i < size; i++, ++it)
-    {
-        array[i] = *it;
-    }
-}
-
-#endif
