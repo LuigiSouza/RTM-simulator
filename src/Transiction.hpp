@@ -15,8 +15,6 @@ using std::to_string;
 
 typedef std::string Quadruple_t;
 
-static void set_values(Quadruple_t *array, list<string> values, int size);
-
 class Transiction
 {
 private:

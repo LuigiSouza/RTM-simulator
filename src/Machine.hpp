@@ -153,15 +153,11 @@ void Machine::create_copy()
     states_B.insert(pair<string, State *>("-", new State("-")));
     states_B.insert(pair<string, State *>("R", new State("R")));
     states_B.insert(pair<string, State *>("r", new State("r")));
-    states_B.insert(pair<string, State *>("B", new State("B")));
-    states_B.insert(pair<string, State *>("F", new State("F")));
-    State *statemin = states_B.find("-")->second;
+    State *statem = states_B.find("-")->second;
     State *stateL = states_B.find("L")->second;
     State *statel = states_B.find("l")->second;
     State *stateR = states_B.find("R")->second;
     State *stater = states_B.find("r")->second;
-    State *stateb = states_B.find("B")->second;
-    State *statef = states_B.find("F")->second;
 
     Transiction *trasiction = new Transiction(final_state->get_name(), "l", {Tape::blank, "\\", Tape::blank, Tape::blank, "0", Tape::blank});
     trasiction->set_next_state(statel);
@@ -173,14 +169,14 @@ void Machine::create_copy()
     trasiction->set_next_state(statel);
     stateL->add_transiction(trasiction);
     trasiction = new Transiction("L", "-", {"\\", "\\", Tape::blank, "0", "0", Tape::blank});
-    trasiction->set_next_state(statemin);
+    trasiction->set_next_state(statem);
     stateL->add_transiction(trasiction);
     trasiction = new Transiction("-", "r", {Tape::blank, "\\", Tape::blank, Tape::blank, "0", Tape::blank});
     trasiction->set_next_state(stater);
-    statemin->add_transiction(trasiction);
+    statem->add_transiction(trasiction);
     trasiction = new Transiction("-", "-", {"\\", "\\", Tape::blank, "-1", "0", Tape::blank});
-    trasiction->set_next_state(statemin);
-    statemin->add_transiction(trasiction);
+    trasiction->set_next_state(statem);
+    statem->add_transiction(trasiction);
     trasiction = new Transiction("r", "R", {"\\", "\\", "\\", "1", "0", "1"});
     trasiction->set_next_state(stateR);
     stater->add_transiction(trasiction);
