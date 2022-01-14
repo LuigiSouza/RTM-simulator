@@ -18,6 +18,8 @@ typedef std::string Quadruple_t;
 class Transition
 {
 private:
+    static char index;
+
     string curr_state, next_state;
     State *next_state_obj = nullptr;
 

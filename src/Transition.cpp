@@ -1,6 +1,16 @@
 #include "Transition.hpp"
 #include "State.hpp"
 
+char Transition::index = '0';
+
+bool Transition::get_single()
+{
+    return this->single_quad;
+}
+
+void Transition::set_next_state(State *state) { this->next_state_obj = state; }
+State *Transition::get_next_state() { return this->next_state_obj; }
+
 static void set_values(Quadruple_t *array, list<string> values, int size)
 {
     auto it = values.begin();
@@ -9,11 +19,6 @@ static void set_values(Quadruple_t *array, list<string> values, int size)
         array[i] = *it;
     }
 }
-
-bool Transition::get_single() { return this->single_quad; }
-
-void Transition::set_next_state(State *state) { this->next_state_obj = state; }
-State *Transition::get_next_state() { return this->next_state_obj; }
 
 pair<Quadruple_t *, Quadruple_t *> Transition::get_quad()
 {
@@ -51,10 +56,12 @@ Transition::Transition(char curr_state, char symbol, char next_state, char next_
 {
     string str_state(1, curr_state), str_nxtstate(1, next_state);
     string str_symbol(1, symbol), str_nxtsymbol(1, next_symbol);
+    string str_index(1, Transition::index);
     this->curr_state = str_state;
     this->next_state = str_nxtstate;
     set_values(fst_quad, {str_symbol, "\\", "\\", str_nxtsymbol, "1", "0"}, 6);
-    set_values(snd_quad, {"\\", Tape::blank, "\\", to_string(step), str_state, "0"}, 6);
+    set_values(snd_quad, {"\\", Tape::blank, "\\", to_string(step), str_index, "0"}, 6);
+    Transition::index += Transition::index == Tape::blank[0] ? 2 : 1;
 }
 
 Transition::Transition(string curr_state, string next_state, list<string> quad)
