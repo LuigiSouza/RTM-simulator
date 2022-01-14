@@ -201,7 +201,7 @@ void Machine::run()
     while (this->machine_state == Enum_state::Running && ++i)
         step();
 
-    cout << "Programa finalizado, passos: " << i << std::endl;
+    cout << "Programa finalizado, passos: " << i << endl;
     print_machine(nullptr);
 }
 
